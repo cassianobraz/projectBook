@@ -10,4 +10,3 @@ $livros = [
   ['id' => 8, 'titulo' => 'Crime e Castigo', 'autor' => 'Fiódor Dostoiévski', 'descricao' => 'Um estudo psicológico profundo sobre'],
   ['id' => 9, 'titulo' => 'Ulisses', 'autor' => 'James Joyce', 'descricao' => 'Uma obra-prima modernista que segue um dia na vida'],
 ];
-?>
