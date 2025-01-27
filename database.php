@@ -1,30 +1,38 @@
 <?php
-
-class Livro
-{
-  public $id;
-  public $titulo;
-  public $autor;
-  public $descricao;
-}
 class DB
 {
-  public function livros()
-  {
-    $db = new PDO('sqlite:database.sqlite');
-    $query = $db->query("select * from livros");
-    $items = $query->fetchAll();
-    $retorno = [];
+  private $db;
 
-    foreach ($items as $item) {
-      $livro = new Livro();
-      $livro->id = $item['id'];
-      $livro->titulo = $item['titulo'];
-      $livro->autor = $item['autor'];
-      $livro->descricao = $item['descricao'];
-      $retorno[] = $livro;
+  public function __construct($config)
+  {
+    $this->db = new PDO($this->getDns($config));
+  }
+
+  private function getDns($config)
+  {
+    $driver = $config['driver'];
+    unset($config['driver']);
+
+    $dns = $driver . ':' . http_build_query($config, '', ';');
+
+    if ($driver == 'sqlite') {
+      $dns = $driver . ':' . $config['database'];
     }
 
-    return $retorno;
+    return $dns;
+  }
+
+  public function query($query, $class = null, $params = [])
+  {
+    $prepare = $this->db->prepare($query);
+
+    if ($class) {
+      $prepare->setFetchMode(PDO::FETCH_CLASS, $class);
+    }
+    $prepare->execute($params);
+
+    return $prepare;
   }
 }
+
+$database = new DB($config['database']);
